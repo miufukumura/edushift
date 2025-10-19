@@ -6,23 +6,20 @@
 <h2 class="mb-4">管理者ダッシュボード</h2>
 
 <div class="row mb-4">
-    <!-- アカウント管理への導線 -->
     <div class="col-12">
         <div class="card p-3 shadow-sm bg-light">
-            <h4 class="card-title text-primary">⚙️ アカウント・生徒情報管理</h4>
-            <p>講師や生徒の追加、編集、削除はこちらから行えます。</p>
-            <a href="{{ url_for('manage_users') }}" class="btn btn-warning w-100">講師・生徒管理画面へ</a>
+            <h4 class="card-title text-primary">講師・生徒の管理</h4>
+            <p class="mb-2">講師のシフトや生徒情報の追加・削除は管理画面から行えます。</p>
+            <a href="{{ url_for('main.manage_users') }}" class="btn btn-warning w-100">講師・生徒管理画面へ</a>
         </div>
     </div>
 </div>
 
 <div class="row">
-    <!-- 全講師シフト一覧 (左側: カレンダー形式の代替) -->
     <div class="col-md-6">
         <div class="card p-4 shadow-sm mb-4">
-            <h4 class="card-title text-success">🗓️ 全講師シフト一覧 (直近のシフト)</h4>
-            <p class="text-muted">全講師の直近の出勤予定を確認できます。</p>
-            
+            <h4 class="card-title text-success">全講師のシフト一覧</h4>
+            <p class="text-muted">直近のシフト状況を確認できます。</p>
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
@@ -39,26 +36,24 @@
                         <td>{{ shift.start_time[:5] }} 〜 {{ shift.end_time[:5] }}</td>
                     </tr>
                     {% else %}
-                    <tr><td colspan="3" class="text-center text-muted">現在、登録されているシフトはありません。</td></tr>
+                    <tr><td colspan="3" class="text-center text-muted">現在登録されているシフトはありません。</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- 欠席・振替履歴 (右側) -->
     <div class="col-md-6">
         <div class="card p-4 shadow-sm mb-4">
-            <h4 class="card-title text-danger">⚠️ 欠席・振替 最新履歴</h4>
-            <p class="text-muted">直近の授業変更情報を確認できます。</p>
-            
+            <h4 class="card-title text-danger">欠席・振替の最新履歴</h4>
+            <p class="text-muted">直近の授業変更を確認できます。</p>
             <table class="table table-striped table-sm">
                 <thead>
                     <tr>
                         <th>日付</th>
                         <th>生徒名</th>
                         <th>状態</th>
-                        <th>担当講師</th>
+                        <th>講師名</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -78,7 +73,7 @@
                         <td>{{ change.teacher_name }}</td>
                     </tr>
                     {% else %}
-                    <tr><td colspan="4" class="text-center text-muted">欠席・振替の履歴はありません。</td></tr>
+                    <tr><td colspan="4" class="text-center text-muted">欠席・振替の記録はまだありません。</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

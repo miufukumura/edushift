@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}講師シフト管理{% endblock %}
+
+{% block content %}
+<h2>講師シフト管理</h2>
+
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-3 mb-4">
+            <h4>{{ 'シフト編集' if is_edit_mode else 'シフト登録' }}</h4>
+            <form method="POST" action="{{ url_for('main.teacher_shift') }}">
+                {% if form_data.get('shift_id') %}
+                <input type="hidden" name="shift_id" value="{{ form_data.get('shift_id') }}">
+                {% endif %}
+                <div class="mb-3">
+                    <label for="date" class="form-label">日付</label>
+                    <input type="date" class="form-control" id="date" name="date"
+                           value="{{ form_data.get('date', '') }}" required>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="start_time" class="form-label">開始時刻</label>
+                        <input type="time" class="form-control" id="start_time" name="start_time"
+                               value="{{ form_data.get('start_time', '17:00') }}" required>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="end_time" class="form-label">終了時刻</label>
+                        <input type="time" class="form-control" id="end_time" name="end_time"
+                               value="{{ form_data.get('end_time', '21:00') }}" required>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">
+                        {{ 'シフトを更新' if is_edit_mode else 'シフトを登録' }}
+                    </button>
+                    {% if is_edit_mode %}
+                    <a href="{{ url_for('main.teacher_shift') }}" class="btn btn-outline-secondary">キャンセル</a>
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h4>登録済みシフト一覧</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>日付</th>
+                    <th>開始時刻</th>
+                    <th>終了時刻</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% set current_edit = form_data.get('shift_id')|int if form_data.get('shift_id') else none %}
+                {% for shift in shifts %}
+                <tr class="{% if current_edit is not none and current_edit == shift.id %}table-warning{% endif %}">
+                    <td>{{ shift.date }}</td>
+                    <td>{{ shift.start_time }}</td>
+                    <td>{{ shift.end_time }}</td>
+                    <td class="d-flex gap-2">
+                        <a class="btn btn-sm btn-warning" href="{{ url_for('main.teacher_shift', edit=shift.id) }}">編集</a>
+                        <form method="POST" action="{{ url_for('main.delete_shift', shift_id=shift.id) }}"
+                              onsubmit="return confirm('シフトを削除してもよろしいですか？');">
+                            <button type="submit" class="btn btn-sm btn-danger">削除</button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">まだシフトが登録されていません。</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

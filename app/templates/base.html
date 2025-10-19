@@ -15,22 +15,28 @@
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     {% if session.get('user_role') == 'teacher' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('teacher_shift') }}">シフト管理</a>
+                        <a class="nav-link" href="{{ url_for('main.teacher_shift') }}">シフト管理</a>
                     </li>
                     {% endif %}
                     {% if session.get('user_role') == 'admin' %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('admin_dashboard') }}">ダッシュボード</a>
+                        <a class="nav-link" href="{{ url_for('main.admin_dashboard') }}">ダッシュボード</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('lesson_manage') }}">授業管理</a>
+                        <a class="nav-link" href="{{ url_for('main.lesson_manage') }}">授業管理</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.manage_users') }}">講師・生徒管理</a>
                     </li>
                     {% endif %}
                 </ul>
                 <ul class="navbar-nav">
                     {% if 'user_id' in session %}
                     <li class="nav-item">
-                        <a class="btn btn-danger" href="{{ url_for('logout') }}">ログアウト</a>
+                        <span class="navbar-text me-3">{{ session.get('user_name') }} さん</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-danger" href="{{ url_for('main.logout') }}">ログアウト</a>
                     </li>
                     {% endif %}
                 </ul>

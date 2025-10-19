@@ -6,14 +6,14 @@
 <div class="row justify-content-center">
     <div class="col-md-6 col-lg-4">
         <h2 class="text-center mb-4">edushift ログイン</h2>
-        
+
         {% if error %}
         <div class="alert alert-danger" role="alert">
             {{ error }}
         </div>
         {% endif %}
 
-        <form method="POST" action="{{ url_for('login') }}">
+        <form method="POST" action="{{ url_for('main.login') }}">
             <div class="mb-3">
                 <label for="email" class="form-label">メールアドレス</label>
                 <input type="email" class="form-control" id="email" name="email" required>
@@ -24,10 +24,10 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">ログイン</button>
         </form>
-        <!-- 🚨 新規登録へのリンクをここに追加 🚨 -->
-        <p class="text-center">アカウントをお持ちでない方: 
-            <a href="{{ url_for('register') }}" class="btn btn-sm btn-outline-secondary">新規登録</a>
-        </p> 
+        <p class="text-center mt-3">
+            アカウントをお持ちでない方は
+            <a href="{{ url_for('main.register') }}" class="btn btn-sm btn-outline-secondary ms-1">新規登録</a>
+        </p>
     </div>
 </div>
 {% endblock %}

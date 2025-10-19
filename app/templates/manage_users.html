@@ -3,14 +3,14 @@
 {% block title %}講師・生徒管理{% endblock %}
 
 {% block content %}
-<h2 class="mb-4">アカウント・生徒情報管理 (管理者専用)</h2>
+<h2 class="mb-4">アカウント・生徒情報 管理（管理者用）</h2>
 
-<!-- 1. 講師・管理者 (User) 追加フォーム -->
+<!-- 1. 講師・管理者アカウント追加フォーム -->
 <div class="card p-4 shadow-sm mb-5">
-    <h4 class="card-title text-primary">🧑‍🏫 講師/管理者 アカウント追加</h4>
-    <form method="POST" action="{{ url_for('manage_users') }}" class="row g-3">
+    <h4 class="card-title text-primary">🧑‍🏫 講師 / 管理者 アカウント追加</h4>
+    <form method="POST" action="{{ url_for('main.manage_users') }}" class="row g-3">
         <input type="hidden" name="action" value="add_user">
-        
+
         <div class="col-md-3">
             <label for="user_name" class="form-label">氏名</label>
             <input type="text" class="form-control" id="user_name" name="name" required>
@@ -36,18 +36,18 @@
     </form>
 </div>
 
-<!-- 2. 生徒 (Student) 追加フォーム -->
+<!-- 2. 生徒追加フォーム -->
 <div class="card p-4 shadow-sm mb-5">
     <h4 class="card-title text-success">🎓 生徒情報追加</h4>
-    <form method="POST" action="{{ url_for('manage_users') }}" class="row g-3">
+    <form method="POST" action="{{ url_for('main.manage_users') }}" class="row g-3">
         <input type="hidden" name="action" value="add_student">
-        
+
         <div class="col-md-5">
             <label for="student_name" class="form-label">生徒名</label>
             <input type="text" class="form-control" id="student_name" name="name" required>
         </div>
         <div class="col-md-5">
-            <label for="student_grade" class="form-label">学年/備考</label>
+            <label for="student_grade" class="form-label">学年 / 備考</label>
             <input type="text" class="form-control" id="student_grade" name="grade" placeholder="例: 中3 / 高校受験クラス">
         </div>
         <div class="col-md-2 d-flex align-items-end">
@@ -57,7 +57,7 @@
 </div>
 
 <div class="row">
-    <!-- 3. 講師/管理者 一覧 -->
+    <!-- 3. 講師・管理者 一覧 -->
     <div class="col-md-6">
         <div class="card p-4 shadow-sm mb-4">
             <h4 class="card-title text-primary">講師・管理者一覧</h4>
@@ -75,13 +75,17 @@
                     <tr>
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
-                        <td><span class="badge bg-{{ 'danger' if user.role == 'admin' else 'info' }}">{{ '管理者' if user.role == 'admin' else '講師' }}</span></td>
                         <td>
-                            <form method="POST" action="{{ url_for('manage_users') }}" style="display:inline;">
+                            <span class="badge bg-{{ 'danger' if user.role == 'admin' else 'info' }}">
+                                {{ '管理者' if user.role == 'admin' else '講師' }}
+                            </span>
+                        </td>
+                        <td>
+                            <form method="POST" action="{{ url_for('main.manage_users') }}" style="display:inline;">
                                 <input type="hidden" name="action" value="delete_user">
                                 <input type="hidden" name="id" value="{{ user.id }}">
-                                <button type="submit" class="btn btn-sm btn-outline-danger" 
-                                        onclick="return confirm('{{ user.name }} ({{ user.role }}) のアカウントを削除してもよろしいですか？関連シフトも削除されます。');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                        onclick="return confirm('{{ user.name }} ({{ '管理者' if user.role == 'admin' else '講師' }}) のアカウントを削除しますか？\n関連するシフトも削除されます。');">
                                     削除
                                 </button>
                             </form>
@@ -101,7 +105,7 @@
                 <thead>
                     <tr>
                         <th>生徒名</th>
-                        <th>学年/備考</th>
+                        <th>学年 / 備考</th>
                         <th>操作</th>
                     </tr>
                 </thead>
@@ -109,13 +113,13 @@
                     {% for student in students %}
                     <tr>
                         <td>{{ student.name }}</td>
-                        <td>{{ student.grade }}</td>
+                        <td>{{ student.grade or '—' }}</td>
                         <td>
-                            <form method="POST" action="{{ url_for('manage_users') }}" style="display:inline;">
+                            <form method="POST" action="{{ url_for('main.manage_users') }}" style="display:inline;">
                                 <input type="hidden" name="action" value="delete_student">
                                 <input type="hidden" name="id" value="{{ student.id }}">
                                 <button type="submit" class="btn btn-sm btn-outline-danger"
-                                        onclick="return confirm('生徒: {{ student.name }} の情報を削除してもよろしいですか？関連授業履歴も削除されます。');">
+                                        onclick="return confirm('生徒 {{ student.name }} の情報を削除しますか？\n関連する授業履歴も削除されます。');">
                                     削除
                                 </button>
                             </form>
