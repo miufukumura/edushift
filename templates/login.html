@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}ログイン{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <h2 class="text-center mb-4">edushift ログイン</h2>
+        
+        {% if error %}
+        <div class="alert alert-danger" role="alert">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            <div class="mb-3">
+                <label for="email" class="form-label">メールアドレス</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">パスワード</label>
+                <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">ログイン</button>
+        </form>
+        <!-- 🚨 新規登録へのリンクをここに追加 🚨 -->
+        <p class="text-center">アカウントをお持ちでない方: 
+            <a href="{{ url_for('register') }}" class="btn btn-sm btn-outline-secondary">新規登録</a>
+        </p> 
+    </div>
+</div>
+{% endblock %}

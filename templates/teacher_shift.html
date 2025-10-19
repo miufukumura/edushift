@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}講師シフト管理{% endblock %}
+
+{% block content %}
+<h2>自分のシフト管理</h2>
+<div class="row">
+    <div class="col-md-4">
+        <div class="card p-3 mb-4">
+            <h4>シフト登録</h4>
+            <form method="POST" action="{{ url_for('teacher_shift') }}">
+                <div class="mb-3">
+                    <label for="date" class="form-label">日付</label>
+                    <input type="date" class="form-control" id="date" name="date" required>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="start_time" class="form-label">開始時刻</label>
+                        <input type="time" class="form-control" id="start_time" name="start_time" value="17:00" required>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="end_time" class="form-label">終了時刻</label>
+                        <input type="time" class="form-control" id="end_time" name="end_time" value="21:00" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-success w-100">シフトを登録</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h4>登録済みシフト一覧</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>日付</th>
+                    <th>開始時刻</th>
+                    <th>終了時刻</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for shift in shifts %}
+                <tr>
+                    <td>{{ shift.date }}</td>
+                    <td>{{ shift.start_time }}</td>
+                    <td>{{ shift.end_time }}</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">編集</button>
+                        <button class="btn btn-sm btn-danger">削除</button>
+                    </td>
+                </tr>
+                {% else %}
+                <tr><td colspan="4">まだシフトが登録されていません。</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

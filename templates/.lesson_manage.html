@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}生徒授業管理{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">生徒授業管理</h2>
+
+<div class="row">
+    <!-- 授業登録フォーム (左側) -->
+    <div class="col-md-4">
+        <div class="card p-4 shadow-sm mb-4">
+            <h4 class="card-title text-primary">授業・欠席・振替登録</h4>
+            <form method="POST" action="{{ url_for('lesson_manage') }}">
+                
+                <!-- 生徒選択 -->
+                <div class="mb-3">
+                    <label for="student_id" class="form-label">生徒名 <span class="text-danger">*</span></label>
+                    <select class="form-select" id="student_id" name="student_id" required>
+                        <option value="">生徒を選択してください</option>
+                        {% for student in students %}
+                        <!-- studentはdb.executeの結果なので、student.idとstudent.nameでアクセス -->
+                        <option value="{{ student.id }}">{{ student.name }} ({{ student.grade }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 担当講師選択 -->
+                <div class="mb-3">
+                    <label for="teacher_id" class="form-label">担当講師 <span class="text-danger">*</span></label>
+                    <select class="form-select" id="teacher_id" name="teacher_id" required>
+                        <option value="">講師を選択してください</option>
+                        {% for teacher in teachers %}
+                        <option value="{{ teacher.id }}" {% if teacher.id == session.get('user_id') %}selected{% endif %}>
+                            {{ teacher.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- 日付と状態 -->
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="date" class="form-label">日付 <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" id="date" name="date" required value="{{ 'now'|date('Y-m-d') }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="status" class="form-label">状態 <span class="text-danger">*</span></label>
+                        <select class="form-select" id="status" name="status" required>
+                            <option value="通常">通常授業</option>
+                            <option value="欠席">生徒欠席</option>
+                            <option value="振替">振替授業</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 備考 -->
+                <div class="mb-3">
+                    <label for="notes" class="form-label">備考</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="2" placeholder="特記事項（例: 宿題の内容、振替元の授業日など）"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-2">授業情報を登録</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 授業履歴一覧 (右側) -->
+    <div class="col-md-8">
+        <div class="card p-4 shadow-sm">
+            <h4 class="card-title text-secondary">授業履歴 (最新50件)</h4>
+            <table class="table table-hover table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>日付</th>
+                        <th>生徒名</th>
+                        <th>担当講師</th>
+                        <th>状態</th>
+                        <th>備考</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for lesson in lessons %}
+                    <tr>
+                        <td>{{ lesson.date }}</td>
+                        <td>{{ lesson.student_name }}</td>
+                        <td>{{ lesson.teacher_name }}</td>
+                        <td>
+                            {% if lesson.status == '欠席' %}
+                                <span class="badge bg-danger">{{ lesson.status }}</span>
+                            {% elif lesson.status == '振替' %}
+                                <span class="badge bg-warning text-dark">{{ lesson.status }}</span>
+                            {% else %}
+                                <span class="badge bg-success">{{ lesson.status }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ lesson.notes or 'なし' }}</td>
+                        <td>
+                            <!-- 編集・削除機能は後で追加 -->
+                            <button class="btn btn-sm btn-outline-secondary" disabled>編集</button>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="6" class="text-center text-muted">授業履歴はまだ登録されていません。</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

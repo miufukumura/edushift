@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}管理者ダッシュボード{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">管理者ダッシュボード</h2>
+
+<div class="row mb-4">
+    <!-- アカウント管理への導線 -->
+    <div class="col-12">
+        <div class="card p-3 shadow-sm bg-light">
+            <h4 class="card-title text-primary">⚙️ アカウント・生徒情報管理</h4>
+            <p>講師や生徒の追加、編集、削除はこちらから行えます。</p>
+            <a href="{{ url_for('manage_users') }}" class="btn btn-warning w-100">講師・生徒管理画面へ</a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <!-- 全講師シフト一覧 (左側: カレンダー形式の代替) -->
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm mb-4">
+            <h4 class="card-title text-success">🗓️ 全講師シフト一覧 (直近のシフト)</h4>
+            <p class="text-muted">全講師の直近の出勤予定を確認できます。</p>
+            
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>講師名</th>
+                        <th>時間帯</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shift in all_shifts %}
+                    <tr>
+                        <td>{{ shift.date }}</td>
+                        <td>{{ shift.teacher_name }}</td>
+                        <td>{{ shift.start_time[:5] }} 〜 {{ shift.end_time[:5] }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="3" class="text-center text-muted">現在、登録されているシフトはありません。</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 欠席・振替履歴 (右側) -->
+    <div class="col-md-6">
+        <div class="card p-4 shadow-sm mb-4">
+            <h4 class="card-title text-danger">⚠️ 欠席・振替 最新履歴</h4>
+            <p class="text-muted">直近の授業変更情報を確認できます。</p>
+            
+            <table class="table table-striped table-sm">
+                <thead>
+                    <tr>
+                        <th>日付</th>
+                        <th>生徒名</th>
+                        <th>状態</th>
+                        <th>担当講師</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for change in recent_changes %}
+                    <tr>
+                        <td>{{ change.date }}</td>
+                        <td>{{ change.student_name }}</td>
+                        <td>
+                            {% if change.status == '欠席' %}
+                                <span class="badge bg-danger">{{ change.status }}</span>
+                            {% elif change.status == '振替' %}
+                                <span class="badge bg-warning text-dark">{{ change.status }}</span>
+                            {% else %}
+                                {{ change.status }}
+                            {% endif %}
+                        </td>
+                        <td>{{ change.teacher_name }}</td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center text-muted">欠席・振替の履歴はありません。</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
